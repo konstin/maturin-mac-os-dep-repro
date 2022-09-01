@@ -1,0 +1,29 @@
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  test:
+    name: Test
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ ubuntu-latest, macos-latest ]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v3
+      - name: Install python 3.8
+        uses: actions/setup-python@v3
+        with:
+          python-version: "3.8"
+      - name: Install maturin
+        run: pip install maturin
+      - name: Install stable rust
+        uses: actions-rs/toolchain@v1
+        id: rustup
+        with:
+          profile: minimal
+          toolchain: stable
+      - name: maturin build
+        run: maturin build
